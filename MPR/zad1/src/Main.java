@@ -23,7 +23,7 @@ public class Main {
 
         System.out.println("\nGrupowanie po stanowisku");
         manager.groupByPosition().forEach((pos, list) -> {
-            System.out.println(pos + ": " + list.size() + " -> " + list);
+            System.out.println(pos + ": " + list.size() + " " + list);
         });
 
         System.out.println("\nLiczba pracowników na stanowiskach");
@@ -31,7 +31,7 @@ public class Main {
                 System.out.println(pos + ": " + count));
 
         System.out.println("\nŚrednie wynagrodzenie: " + manager.averageSalary());
-        System.out.println("Najlepiej zarabiający: " +
+        System.out.println("Najlepiej zarabiający : " +
                 manager.findHighestSalary().map(Employee::toString).orElse("Brak danych"));
     }
 }
