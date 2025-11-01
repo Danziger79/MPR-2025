@@ -2,65 +2,106 @@ package service;
 
 import model.Employee;
 import model.Position;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EmployeeManager {
+
     private final List<Employee> employees = new ArrayList<>();
 
-
+    // Dodawanie pracownika (sprawdza, czy email już istnieje)
     public boolean addEmployee(Employee employee) {
-        if (employees.stream().anyMatch(e -> e.getEmail().equalsIgnoreCase(employee.getEmail()))) {
-            System.out.println("Pracownik o tym adresie email już istnieje!");
-            return false;
+        for (Employee e : employees) {
+            if (e.getEmail().equalsIgnoreCase(employee.getEmail())) {
+                System.out.println("Pracownik o tym adresie email już istnieje!");
+                return false;
+            }
         }
         employees.add(employee);
         return true;
     }
 
-    // Wyswietlanie  pracowników
+    // Wyświetlanie wszystkich pracowników
     public void showAllEmployees() {
-        employees.forEach(System.out::println);
+        for (Employee e : employees) {
+            System.out.println(e);
+        }
     }
 
     // Wyszukiwanie po firmie
     public List<Employee> findByCompany(String companyName) {
-        return employees.stream()
-                .filter(e -> e.getCompanyName().equalsIgnoreCase(companyName))
-                .collect(Collectors.toList());
+        List<Employee> result = new ArrayList<>();
+        for (Employee e : employees) {
+            if (e.getCompanyName().equalsIgnoreCase(companyName)) {
+                result.add(e);
+            }
+        }
+        return result;
     }
 
-    // sortowanie po nazwisku
+    // Sortowanie po imieniu (alfabetycznie)
     public List<Employee> sortByName() {
-        return employees.stream()
-                .sorted(Comparator.comparing(Employee::getName))
-                .collect(Collectors.toList());
+        // Tworzymy kopię listy, żeby nie zmieniać oryginału
+        List<Employee> sortedList = new ArrayList<>(employees);
+        for (int i = 0; i < sortedList.size() - 1; i++) {
+            for (int j = 0; j < sortedList.size() - 1 - i; j++) {
+                if (sortedList.get(j).getName().compareToIgnoreCase(sortedList.get(j + 1).getName()) > 0) {
+                    Employee temp = sortedList.get(j);
+                    sortedList.set(j, sortedList.get(j + 1));
+                    sortedList.set(j + 1, temp);
+                }
+            }
+        }
+        return sortedList;
     }
 
     // Grupowanie po stanowisku
     public Map<Position, List<Employee>> groupByPosition() {
-        return employees.stream()
-                .collect(Collectors.groupingBy(Employee::getPosition));
+        Map<Position, List<Employee>> grouped = new HashMap<>();
+        for (Employee e : employees) {
+            Position pos = e.getPosition();
+            if (!grouped.containsKey(pos)) {
+                grouped.put(pos, new ArrayList<>());
+            }
+            grouped.get(pos).add(e);
+        }
+        return grouped;
     }
 
-    //zlicznie liczby pracowników na stanowisku
-    public Map<Position, Long> countByPosition() {
-        return employees.stream()
-                .collect(Collectors.groupingBy(Employee::getPosition, Collectors.counting()));
+    // Liczba pracowników na danym stanowisku
+    public Map<Position, Integer> countByPosition() {
+        Map<Position, Integer> counts = new HashMap<>();
+        for (Employee e : employees) {
+            Position pos = e.getPosition();
+            if (!counts.containsKey(pos)) {
+                counts.put(pos, 0);
+            }
+            counts.put(pos, counts.get(pos) + 1);
+        }
+        return counts;
     }
 
-    // srednie wynagrodzenie
+    // Średnie wynagrodzenie
     public double averageSalary() {
-        return employees.stream()
-                .mapToDouble(Employee::getSalary)
-                .average()
-                .orElse(0.0);
+        if (employees.isEmpty()) return 0.0;
+        double sum = 0.0;
+        for (Employee e : employees) {
+            sum += e.getSalary();
+        }
+        return sum / employees.size();
     }
 
-    // Pracownik z najwyzszym wynagrodzeniem
-    public Optional<Employee> findHighestSalary() {
-        return employees.stream()
-                .max(Comparator.comparingDouble(Employee::getSalary));
+    // Pracownik z najwyższym wynagrodzeniem
+    public Employee findHighestSalary() {
+        if (employees.isEmpty()) return null;
+        Employee highest = employees.get(0);
+        for (Employee e : employees) {
+            if (e.getSalary() > highest.getSalary()) {
+                highest = e;
+            }
+        }
+        return highest;
     }
 }
