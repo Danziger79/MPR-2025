@@ -8,8 +8,8 @@ public class EmployeeModelTest {
     @Test
     public void equalsAndHashCode_shouldBeBasedOnEmail() {
         // Arrange
-        Employee e1 = new Employee("Jan Kowalski", "jan@x.pl", "X", Position.PROGRAMISTA, 8000);
-        Employee e2 = new Employee("Jan Nowy", "jan@x.pl", "Y", Position.MANAGER, 12000);
+        Employee e1 = new Employee("Erich von Wielgat", "dd2@x.pl", "X", Position.PROGRAMISTA, 8000);
+        Employee e2 = new Employee("Jack Black", "jblck@x.pl", "Y", Position.MANAGER, 12000);
         Employee e3 = new Employee("Inny", "inny@x.pl", "X", Position.PROGRAMISTA, 8000);
 
         // Act & Assert

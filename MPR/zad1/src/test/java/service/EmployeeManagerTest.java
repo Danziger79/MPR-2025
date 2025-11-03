@@ -64,16 +64,16 @@ public class EmployeeManagerTest {
     public void groupByPosition_and_countByPosition_shouldWork() {
         // Act
         Map<Position, List<Employee>> grouped = manager.groupByPosition();
-        Map<Position, Long> counts = manager.countByPosition();
+        Map<Position, Integer> counts = manager.countByPosition(); // ← poprawka: Integer
 
         // Assert basic counts
         assertTrue(grouped.containsKey(Position.PREZES));
         assertEquals(1, grouped.get(Position.PREZES).size());
 
-        assertEquals(1L, counts.get(Position.PREZES).longValue());
-        assertEquals(1L, counts.get(Position.PROGRAMISTA).longValue());
-        assertEquals(1L, counts.get(Position.MANAGER).longValue());
-        assertEquals(1L, counts.get(Position.STAZYSTA).longValue());
+        assertEquals(1, counts.get(Position.PREZES).intValue());
+        assertEquals(1, counts.get(Position.PROGRAMISTA).intValue());
+        assertEquals(1, counts.get(Position.MANAGER).intValue());
+        assertEquals(1, counts.get(Position.STAZYSTA).intValue());
     }
 
     @Test
@@ -103,8 +103,6 @@ public class EmployeeManagerTest {
         assertTrue(empty.groupByPosition().isEmpty());
         assertTrue(empty.countByPosition().isEmpty());
         assertEquals(0.0, empty.averageSalary(), 0.0001);
-        assertFalse(empty.findHighestSalary().isPresent() || empty.findHighestSalary() != null);
-        // Note: original EmployeeManager returned Optional for findHighestSalary in first code;
-        // if your version returns Optional, previous assertion passes; if it returns null you may need to adapt.
+        assertNull(empty.findHighestSalary(), "Expected null when there are no employees");
     }
 }
